@@ -2,7 +2,7 @@
 
 public class ProcessingArray
 {
-    public static double Main(double[] arrA, double[] arrB)
+    public double Main(double[] arrA, double[] arrB)
     {
         double y1 = 0, y2 = 0;
 
