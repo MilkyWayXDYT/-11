@@ -18,5 +18,15 @@ namespace UnitTestProject1
             Double actual = ProcessingArray.Main(myAr, myAr2);
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void TestMethod2()
+        {
+            Double[] myAr = { 0, 0, 0, 0 };
+            Double[] myAr2 = { 0, 0, 0, 0 };
+
+            Double actual = ProcessingArray.Main(myAr, myAr2);
+        }
     }
 }

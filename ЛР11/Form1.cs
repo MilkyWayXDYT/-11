@@ -17,14 +17,18 @@ namespace ЛР11
             InitializeComponent();
 
             label2.Text = "";
+
             dataGridView1.RowCount = 1;
             dataGridView1.ColumnCount = 2;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.Rows[0].Cells[0].Value = "0,0";
+            dataGridView1.Rows[0].Cells[1].Value = "0,0";
+
             dataGridView2.RowCount = 1;
-            dataGridView2.ColumnCount = 1;
+            dataGridView2.ColumnCount = 2;
             dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView2.Rows[0].Cells[0].Value = "0,0";
+            dataGridView2.Rows[0].Cells[1].Value = "0,0";
         }
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
@@ -42,68 +46,86 @@ namespace ЛР11
                 return;
             if (e.KeyChar == (char)Keys.Back)
                 return;
+            if (e.KeyChar == '.')
+                e.KeyChar = ',';
+            if (e.KeyChar == ',' && !tx.Contains(",") && tx.Length > 0)
+                return;
             e.KeyChar = '\0';
         }
 
         // добавление столбиков в dataGridView
-        int n1 = 1;
-        int n2 = 1;
+        int n = 2;
         Random rnd = new Random();
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             int v = (int)numericUpDown1.Value;
-            if (v > n1)
+            if (v > n)
             {
+                // first array
                 DataGridViewColumn column = new DataGridViewColumn();
 
                 column.CellTemplate = new DataGridViewTextBoxCell();
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 dataGridView1.Columns.Add(column);
-                dataGridView1.Columns[n1-1].Name = (n1-1).ToString();
+                dataGridView1.Columns[n].Name = n.ToString();
                 DataGridViewColumn column2 = new DataGridViewColumn();
 
                 column2.CellTemplate = new DataGridViewTextBoxCell();
                 column2.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 dataGridView1.Columns.Add(column2);
-                dataGridView1.Columns[n1].Name = n1.ToString();
+                dataGridView1.Columns[n + 1].Name = (n + 1).ToString();
 
                 if (radioButton1.Checked)
-                    dataGridView1.Rows[0].Cells[n1].Value = "0,0";
+                {
+                    dataGridView1.Rows[0].Cells[n].Value = "0,0";
+                    dataGridView1.Rows[0].Cells[n + 1].Value = "0,0";
+                }
                 if (radioButton2.Checked)
-                    dataGridView1.Rows[0].Cells[n1].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
-                n1+=2;
-            }
-            else if (v < n1)
-            { 
-                dataGridView1.Columns.RemoveAt(n1 - 1);
-                dataGridView1.Columns.RemoveAt(n1 - 2);
-                n1-=2;
-            }
+                {
+                    dataGridView1.Rows[0].Cells[n].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
+                    dataGridView1.Rows[0].Cells[n + 1].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
+                }
 
-        }
+                // second array
+                DataGridViewColumn column3 = new DataGridViewColumn();
 
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
-        {
-            int v = (int)numericUpDown2.Value;
-            if (v > n2)
-            {
-                DataGridViewColumn column = new DataGridViewColumn();
+                column3.CellTemplate = new DataGridViewTextBoxCell();
+                column3.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView2.Columns.Add(column3);
+                dataGridView2.Columns[n].Name = n.ToString();
 
-                column.CellTemplate = new DataGridViewTextBoxCell();
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                dataGridView2.Columns.Add(column);
-                dataGridView2.Columns[n2].Name = n2.ToString();
+                DataGridViewColumn column4 = new DataGridViewColumn();
+
+                column4.CellTemplate = new DataGridViewTextBoxCell();
+                column4.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dataGridView2.Columns.Add(column4);
+                dataGridView2.Columns[n + 1].Name = (n + 1).ToString();
+
                 if (radioButton1.Checked)
-                    dataGridView2.Rows[0].Cells[n2].Value = "0,0";
+                {
+                    dataGridView2.Rows[0].Cells[n].Value = "0,0";
+                    dataGridView2.Rows[0].Cells[n + 1].Value = "0,0";
+                }
                 if (radioButton2.Checked)
-                    dataGridView2.Rows[0].Cells[n2].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
-                n2++;
+                {
+                    dataGridView2.Rows[0].Cells[n].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
+                    dataGridView2.Rows[0].Cells[n + 1].Value = Math.Round(rnd.NextDouble() * (10 + 10) - 10, 2);
+                }
+
+                n += 2;
             }
-            else if (v < n2)
+            else if (v < n)
             {
-                dataGridView2.Columns.RemoveAt(n2 - 1);
-                n2--;
+                // first array
+                dataGridView1.Columns.RemoveAt(n - 1);
+                dataGridView1.Columns.RemoveAt(n - 2);
+                // second array
+                dataGridView2.Columns.RemoveAt(n - 1);
+                dataGridView2.Columns.RemoveAt(n - 2);
+
+                n -= 2;
             }
+
         }
 
         // сброс всех значений в 0
@@ -138,14 +160,30 @@ namespace ЛР11
             }
         }
 
+        // вычисление
         private void button1_Click(object sender, EventArgs e)
         {
-            ProcessingArray processing = new ProcessingArray();
-            int rows1 = dataGridView1.RowCount;
+            try
+            {
+                int columns = dataGridView1.ColumnCount;
+                double[] arr1 = new double[columns];
+                double[] arr2 = new double[columns];
 
-            label2.Text = "{processing.Main(, )}";
+                for (int i = 0; i < columns; i++)
+                {
+                    arr1[i] = Convert.ToDouble(dataGridView1.Rows[0].Cells[i].Value);
+                    arr2[i] = Convert.ToDouble(dataGridView2.Rows[0].Cells[i].Value);
+                }
+
+                double res = ProcessingArray.Main(arr1, arr2);
+                label2.Text = $"Y = {res}";
+            }
+            catch
+            {
+                MessageBox.Show("Некорректно заполнены поля массивов");
+            }
         }
 
-        
+
     }
 }
