@@ -133,6 +133,7 @@ namespace ЛР11
         {
             DataGridViewRow row = dataGridView1.Rows[0];
             DataGridViewRow row2 = dataGridView2.Rows[0];
+            label2.Text = "";
 
             foreach (DataGridViewCell cell in row.Cells)
             {
@@ -149,6 +150,7 @@ namespace ЛР11
         {
             DataGridViewRow row = dataGridView1.Rows[0];
             DataGridViewRow row2 = dataGridView2.Rows[0];
+            label2.Text = "";
 
             foreach (DataGridViewCell cell in row.Cells)
             {
